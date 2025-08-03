@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <!-- 홈 화면에 추가 시 전체화면으로 보이도록 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>중포 피킹 계산기</title>
   <style>
     * { box-sizing: border-box; }
@@ -12,8 +15,8 @@
       background: #f4f4f4;
       max-width: 360px;
       margin: 0 auto;
+      -webkit-tap-highlight-color: transparent;
     }
-    h2 { margin-bottom: 12px; text-align: center; }
 
     .top-inputs {
       display: flex;
@@ -21,6 +24,7 @@
       margin-bottom: 10px;
       position: relative;
     }
+
     .robot-box, .das-box {
       width: 48%;
       text-align: center;
@@ -28,13 +32,23 @@
       padding: 16px;
       border-radius: 10px;
     }
+
     .robot-box {
       background-color: #1e40af;
       color: white;
     }
+
     .das-box {
       background-color: white;
       border: 2px solid #ccc;
+    }
+
+    .dimmed-input {
+      background-color: #e5e7eb !important;
+      opacity: 1;
+    }
+    .dimmed-input input {
+      color: #aeaeae !important;
     }
 
     .total-badge {
@@ -61,11 +75,22 @@
       margin: 14px 0 20px;
     }
 
+    .inner-pack button {
+      margin-left: 8px;
+      padding: 6px 10px;
+      font-size: 14px;
+      border: 1px solid #999;
+      border-radius: 6px;
+      background-color: white;
+      cursor: pointer;
+    }
+
     .result-row {
       display: flex;
       justify-content: space-between;
       margin: 10px 0;
     }
+
     .result-box {
       width: 48%;
       background-color: white;
@@ -73,16 +98,26 @@
       padding: 10px;
       text-align: center;
       font-size: 18px;
+      transition: background-color 0.3s, color 0.3s;
     }
+
     .result-box.blue {
       background-color: #1e40af;
       color: white;
     }
+
     .result-box .box-count {
-      font-size: 24px;
+      font-size: 40px;
     }
+
     .result-box .remainder {
       font-size: 18px;
+    }
+
+    .result-box.dimmed {
+      background-color: #e5e7eb;
+      color: #999;
+      opacity: 0.6;
     }
 
     .keypad {
@@ -91,58 +126,68 @@
       gap: 8px;
       margin-top: 20px;
     }
+
     .keypad button {
-      font-size: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #333;
       padding: 16px;
-      border: none;
+      background: #ffffff;
+      border: 1px solid #9c9c9c;
       border-radius: 6px;
       cursor: pointer;
     }
+
     .keypad .equals {
-      background: #2563eb;
+      background-color: #1e40af;
       color: white;
     }
+
     .keypad .clear {
-      background: #ccc;
+      background: #ffffff;
+      border: 1px solid #9c9c9c;
     }
 
-    input.fake-input {
+    .robot-input, .das-input, .inner-input {
       border: none;
       background: transparent;
-      font-size: 26px;
+      font-size: 40px;
       width: 100%;
       text-align: center;
       outline: none;
     }
 
-    @media (max-width: 375px) {
-      input.fake-input {
-        font-size: 24px;
-      }
-      .keypad button {
-        font-size: 18px;
-        padding: 14px;
-      }
+    .robot-input { color: #ccc; }
+    .das-input, .inner-input { color: #333; }
+
+    .input-selected {
+      background-color: transparent;
+      border: 2px solid #2563eb;
+      border-radius: 10px;
     }
+
   </style>
 </head>
 <body>
 
   <div class="top-inputs">
-    <div class="robot-box">
+    <div class="robot-box" id="robot-box-container">
       <label>robot</label><br>
-      <input class="fake-input" id="robot" readonly value="0">
+      <input class="robot-input" id="robot" readonly value="0">
     </div>
     <div class="total-badge" id="total">0</div>
-    <div class="das-box">
+    <div class="das-box" id="das-box-container">
       <label>das</label><br>
-      <input class="fake-input" id="das" readonly value="0">
+      <input class="das-input" id="das" readonly value="0">
     </div>
   </div>
 
   <div class="inner-pack">
-    inner pack<br>
-    <input class="fake-input" id="inner" readonly value="0">
+    <label for="inner">inner pack</label><br>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <input class="inner-input" id="inner" readonly value="0">
+      <button onclick="clearInner()">⟳</button>
+    </div>
   </div>
 
   <div class="result-row">
@@ -180,9 +225,31 @@
     const dasInput = document.getElementById('das');
     const innerInput = document.getElementById('inner');
 
-    robotInput.onclick = () => focused = 'robot';
-    dasInput.onclick = () => focused = 'das';
-    innerInput.onclick = () => focused = 'inner';
+    robotInput.onclick = () => {
+      focused = 'robot';
+      updateFocusStyle('robot');
+    };
+    dasInput.onclick = () => {
+      focused = 'das';
+      updateFocusStyle('das');
+    };
+    innerInput.onclick = () => {
+      focused = 'inner';
+      updateFocusStyle('inner');
+    };
+
+    function updateFocusStyle(targetId) {
+      ['robot', 'das', 'inner'].forEach(id => {
+        document.getElementById(id).classList.remove('input-selected');
+      });
+      document.getElementById(targetId).classList.add('input-selected');
+    }
+
+    function clearFocusStyle() {
+      ['robot', 'das', 'inner'].forEach(id => {
+        document.getElementById(id).classList.remove('input-selected');
+      });
+    }
 
     function press(num) {
       const el = document.getElementById(focused);
@@ -192,13 +259,22 @@
     function clearAll() {
       robotInput.value = "0";
       dasInput.value = "0";
-      innerInput.value = "0";  // ✅ 수정된 부분: inner pack도 0으로 초기화
+      innerInput.value = "0";
       document.getElementById('total').innerText = "0";
+
       ['robot', 'das'].forEach(id => {
         document.getElementById(`${id}-box`).innerText = "0";
         document.getElementById(`${id}-rem`).innerText = "0";
         document.getElementById(`${id}-remove`).innerText = "0";
+        document.getElementById(`${id}-result`).classList.remove('dimmed');
+        document.getElementById(`${id}-box-container`).classList.remove('dimmed-input');
       });
+
+      clearFocusStyle();
+    }
+
+    function clearInner() {
+      innerInput.value = "0";
     }
 
     function calculate() {
@@ -219,10 +295,24 @@
         const box = Math.floor(val / inner);
         const rem = val % inner;
         const remove = rem === 0 ? 0 : inner - rem;
+
         document.getElementById(`${id}-box`).innerText = box;
         document.getElementById(`${id}-rem`).innerText = rem;
         document.getElementById(`${id}-remove`).innerText = remove;
+
+        const resultBox = document.getElementById(`${id}-result`);
+        const inputBox = document.getElementById(`${id}-box-container`);
+
+        if (val === 0) {
+          resultBox.classList.add('dimmed');
+          inputBox.classList.add('dimmed-input');
+        } else {
+          resultBox.classList.remove('dimmed');
+          inputBox.classList.remove('dimmed-input');
+        }
       });
+
+      clearFocusStyle();
     }
   </script>
 </body>
