@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>중포 피킹 계산기</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+      margin: 0; padding: 20px;
+      background: #f4f4f4;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+    h2 { margin-bottom: 12px; text-align: center; }
+
+    .top-inputs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .robot-box, .das-box {
+      width: 48%;
+      text-align: center;
+      font-size: 24px;
+      padding: 16px;
+      border-radius: 10px;
+    }
+    .robot-box {
+      background-color: #1e40af;
+      color: white;
+    }
+    .das-box {
+      background-color: white;
+      border: 2px solid #ccc;
+    }
+
+    .total-badge {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: white;
+      border: 2px solid #666;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-weight: bold;
+      font-size: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .inner-pack {
+      font-size: 20px;
+      text-align: center;
+      margin: 14px 0 20px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    .result-box {
+      width: 48%;
+      background-color: white;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+    }
+    .result-box.blue {
+      background-color: #1e40af;
+      color: white;
+    }
+    .result-box .box-count {
+      font-size: 24px;
+    }
+    .result-box .remainder {
+      font-size: 18px;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .keypad button {
+      font-size: 20px;
+      padding: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .keypad .equals {
+      background: #2563eb;
+      color: white;
+    }
+    .keypad .clear {
+      background: #ccc;
+    }
+
+    input.fake-input {
+      border: none;
+      background: transparent;
+      font-size: 26px;
+      width: 100%;
+      text-align: center;
+      outline: none;
+    }
+
+    @media (max-width: 375px) {
+      input.fake-input {
+        font-size: 24px;
+      }
+      .keypad button {
+        font-size: 18px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-inputs">
+    <div class="robot-box">
+      <label>robot</label><br>
+      <input class="fake-input" id="robot" readonly value="0">
+    </div>
+    <div class="total-badge" id="total">0</div>
+    <div class="das-box">
+      <label>das</label><br>
+      <input class="fake-input" id="das" readonly value="0">
+    </div>
+  </div>
+
+  <div class="inner-pack">
+    inner pack<br>
+    <input class="fake-input" id="inner" readonly value="0">
+  </div>
+
+  <div class="result-row">
+    <div class="result-box blue" id="robot-result">
+      <div><span class="box-count" id="robot-box">0</span> box</div>
+      <div class="remainder"><span id="robot-rem">0</span> ea</div>
+      <div>- <span id="robot-remove">0</span></div>
+    </div>
+    <div class="result-box" id="das-result">
+      <div><span class="box-count" id="das-box">0</span> box</div>
+      <div class="remainder"><span id="das-rem">0</span> ea</div>
+      <div>- <span id="das-remove">0</span></div>
+    </div>
+  </div>
+
+  <div class="keypad">
+    <button onclick="press(7)">7</button>
+    <button onclick="press(8)">8</button>
+    <button onclick="press(9)">9</button>
+    <button onclick="press(4)">4</button>
+    <button onclick="press(5)">5</button>
+    <button onclick="press(6)">6</button>
+    <button onclick="press(1)">1</button>
+    <button onclick="press(2)">2</button>
+    <button onclick="press(3)">3</button>
+    <button onclick="press(0)">0</button>
+    <button class="clear" onclick="clearAll()">C</button>
+    <button class="equals" onclick="calculate()">=</button>
+  </div>
+
+  <script>
+    let focused = 'robot';
+
+    const robotInput = document.getElementById('robot');
+    const dasInput = document.getElementById('das');
+    const innerInput = document.getElementById('inner');
+
+    robotInput.onclick = () => focused = 'robot';
+    dasInput.onclick = () => focused = 'das';
+    innerInput.onclick = () => focused = 'inner';
+
+    function press(num) {
+      const el = document.getElementById(focused);
+      el.value = (el.value === '0') ? `${num}` : el.value + num;
+    }
+
+    function clearAll() {
+      robotInput.value = "0";
+      dasInput.value = "0";
+      innerInput.value = "0";  // ✅ 수정된 부분: inner pack도 0으로 초기화
+      document.getElementById('total').innerText = "0";
+      ['robot', 'das'].forEach(id => {
+        document.getElementById(`${id}-box`).innerText = "0";
+        document.getElementById(`${id}-rem`).innerText = "0";
+        document.getElementById(`${id}-remove`).innerText = "0";
+      });
+    }
+
+    function calculate() {
+      const robot = parseInt(robotInput.value) || 0;
+      const das = parseInt(dasInput.value) || 0;
+      const inner = parseInt(innerInput.value) || 0;
+
+      if (inner === 0) {
+        alert("inner pack 수량은 1 이상이어야 합니다.");
+        return;
+      }
+
+      const total = robot + das;
+      document.getElementById('total').innerText = total;
+
+      ['robot', 'das'].forEach(id => {
+        const val = parseInt(document.getElementById(id).value) || 0;
+        const box = Math.floor(val / inner);
+        const rem = val % inner;
+        const remove = rem === 0 ? 0 : inner - rem;
+        document.getElementById(`${id}-box`).innerText = box;
+        document.getElementById(`${id}-rem`).innerText = rem;
+        document.getElementById(`${id}-remove`).innerText = remove;
+      });
+    }
+  </script>
+</body>
+</html>
