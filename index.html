@@ -3,169 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-  <!-- 홈 화면에 추가 시 전체화면으로 보이도록 -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>중포 피킹 계산기</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>PB</title>
   <style>
     * { box-sizing: border-box; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
-      margin: 0; padding: 20px;
+      margin: 0;
+      padding: 20px;
       background: #f4f4f4;
       max-width: 360px;
       margin: 0 auto;
       -webkit-tap-highlight-color: transparent;
     }
-
     .top-inputs {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
       position: relative;
     }
-
     .robot-box, .das-box {
       width: 48%;
+      height: 130px;
       text-align: center;
-      font-size: 24px;
-      padding: 16px;
-      border-radius: 10px;
-    }
-
-    .robot-box {
-      background-color: #1e40af;
-      color: white;
-    }
-
-    .das-box {
-      background-color: white;
-      border: 2px solid #ccc;
-    }
-
-    .dimmed-input {
-      background-color: #e5e7eb !important;
-      opacity: 1;
-    }
-    .dimmed-input input {
-      color: #aeaeae !important;
-    }
-
-    .total-badge {
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: white;
-      border: 2px solid #666;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      font-weight: bold;
-      font-size: 16px;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      z-index: 10;
-    }
-
-    .inner-pack {
-      font-size: 20px;
-      text-align: center;
-      margin: 14px 0 20px;
-    }
-
-    .inner-pack button {
-      margin-left: 8px;
-      padding: 6px 10px;
-      font-size: 14px;
-      border: 1px solid #999;
-      border-radius: 6px;
-      background-color: white;
-      cursor: pointer;
-    }
-
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-    }
-
-    .result-box {
-      width: 48%;
-      background-color: white;
+      font-size: 24px;
+      padding: 10px 6px;
       border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      font-size: 18px;
-      transition: background-color 0.3s, color 0.3s;
+    }
+    .robot-box { background-color: #1e40af; color: white; border: 2px solid transparent; }
+    .das-box { background-color: white; border: 1px solid #ccc; }
+    .dimmed-input { background-color: #f3f3f3 !important; }
+    .dimmed-input input { color: #dddddd !important; }
+    .total-badge {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      background-color: white; border: 2px solid #666; border-radius: 50%;
+      width: 44px; height: 44px; font-weight: bold; font-size: 16px;
+      display: flex; justify-content: center; align-items: center; z-index: 10;
+    }
+    .inner-pack { font-size: 20px; margin: 14px 0 20px; text-align: center; }
+    .inner-pack-row {
+      display: flex; align-items: center; flex-direction: row;
+      gap: 10px; justify-content: center; width: fit-content; margin: 0 auto;
+    }
+    .inner-pack-row label { white-space: nowrap; }
+    .inner-pack button {
+      padding: 6px 10px; font-size: 14px; border: 1px solid #999;
+      border-radius: 6px; background-color: white; cursor: pointer;
     }
 
-    .result-box.blue {
-      background-color: #1e40af;
-      color: white;
+    .result-row { display: flex; justify-content: space-between; margin: 10px 0; }
+    .result-box {
+      width: 48%; border-radius: 10px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; transition: background-color 0.3s, color 0.3s;
+      padding: 10px 6px;
     }
 
-    .result-box .box-count {
-      font-size: 40px;
+    /* 기본 상태 */
+    #robot-result { background-color: #1e40af; }
+    #das-result { background-color: #ffffff; border: 1px solid #ccc; }
+
+    /* 톤다운 상태 */
+    #robot-result.dimmed { background-color: #f3f3f3; }  /* 연한 파랑 */
+    #das-result.dimmed {
+      background-color: #f3f4f6;
+      border-color: #ddd;
+    }
+    .result-box.dimmed .big-number,
+    .result-box.dimmed .small-number,
+    .result-box.dimmed .remove-number {
+      color: #b0b0b0 !important;
     }
 
-    .result-box .remainder {
-      font-size: 18px;
+    .big-number {
+      font-size: 48px; font-weight: bold; color: white;
+    }
+    #das-result .big-number, #das-result .small-number {
+      color: #333;
+    }
+    .small-number { font-size: 32px; color: #cbd5e1; }
+    .remove-number {
+      font-size: 20px; margin-top: 6px; color: #888888;
     }
 
-    .result-box.dimmed {
-      background-color: #e5e7eb;
-      color: #999;
-      opacity: 0.6;
+    .unit { font-size: 16px; margin-left: 4px; }
+    .flex-line {
+      display: flex; justify-content: center; align-items: baseline; gap: 6px;
     }
 
     .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 20px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 8px; margin-top: 20px;
     }
-
     .keypad button {
-      font-size: 28px;
-      font-weight: bold;
-      color: #333;
-      padding: 16px;
-      background: #ffffff;
-      border: 1px solid #9c9c9c;
-      border-radius: 6px;
-      cursor: pointer;
+      font-size: 28px; font-weight: bold; color: #333;
+      padding: 16px; background: #ffffff;
+      border: 1px solid #9c9c9c; border-radius: 6px; cursor: pointer;
     }
-
-    .keypad .equals {
-      background-color: #1e40af;
-      color: white;
-    }
-
-    .keypad .clear {
-      background: #ffffff;
-      border: 1px solid #9c9c9c;
-    }
+    .keypad .equals { background-color: #1e40af; color: white; }
+    .keypad .clear { background: #ffffff; border: 1px solid #9c9c9c; }
 
     .robot-input, .das-input, .inner-input {
-      border: none;
-      background: transparent;
-      font-size: 40px;
-      width: 100%;
-      text-align: center;
-      outline: none;
+      border: 2px solid transparent; background: transparent;
+      width: 100%; text-align: center;
+      overflow-x: auto; white-space: nowrap;
+      padding-right: 10px; border-radius: 10px;
+      font-size: 42px; font-weight: bold; margin-left: -10px;
     }
-
-    .robot-input { color: #ccc; }
-    .das-input, .inner-input { color: #333; }
-
-    .input-selected {
-      background-color: transparent;
-      border: 2px solid #2563eb;
-      border-radius: 10px;
-    }
-
+    .robot-input { color: white; }
+    .das-input { color: #333; }
+    .inner-input { color: #333; font-size: 40px; text-align: center; }
+.robot-input.input-selected,
+.das-input.input-selected,
+.inner-input.input-selected {
+  border: none;
+  border-bottom: 1px solid #c9c9c9;
+  border-radius: 0;
+}
   </style>
 </head>
 <body>
@@ -183,44 +143,44 @@
   </div>
 
   <div class="inner-pack">
-    <label for="inner">inner pack</label><br>
-    <div style="display: flex; justify-content: center; align-items: center;">
+    <div class="inner-pack-row">
+      <label for="inner">inner pack</label>
       <input class="inner-input" id="inner" readonly value="0">
       <button onclick="clearInner()">⟳</button>
     </div>
   </div>
 
   <div class="result-row">
-    <div class="result-box blue" id="robot-result">
-      <div><span class="box-count" id="robot-box">0</span> box</div>
-      <div class="remainder"><span id="robot-rem">0</span> ea</div>
-      <div>- <span id="robot-remove">0</span></div>
+    <div class="result-box" id="robot-result">
+      <div class="big-number flex-line">
+        <span id="robot-box">0</span><span class="unit">box</span>
+      </div>
+      <div class="small-number flex-line">
+        <span id="robot-rem">0</span><span class="unit">ea</span>
+      </div>
+      <div class="remove-number">-<span id="robot-remove">0</span></div>
     </div>
     <div class="result-box" id="das-result">
-      <div><span class="box-count" id="das-box">0</span> box</div>
-      <div class="remainder"><span id="das-rem">0</span> ea</div>
-      <div>- <span id="das-remove">0</span></div>
+      <div class="big-number flex-line">
+        <span id="das-box">0</span><span class="unit">box</span>
+      </div>
+      <div class="small-number flex-line">
+        <span id="das-rem">0</span><span class="unit">ea</span>
+      </div>
+      <div class="remove-number">-<span id="das-remove">0</span></div>
     </div>
   </div>
 
   <div class="keypad">
-    <button onclick="press(7)">7</button>
-    <button onclick="press(8)">8</button>
-    <button onclick="press(9)">9</button>
-    <button onclick="press(4)">4</button>
-    <button onclick="press(5)">5</button>
-    <button onclick="press(6)">6</button>
-    <button onclick="press(1)">1</button>
-    <button onclick="press(2)">2</button>
-    <button onclick="press(3)">3</button>
-    <button onclick="press(0)">0</button>
-    <button class="clear" onclick="clearAll()">C</button>
+    <button onclick="press(7)">7</button><button onclick="press(8)">8</button><button onclick="press(9)">9</button>
+    <button onclick="press(4)">4</button><button onclick="press(5)">5</button><button onclick="press(6)">6</button>
+    <button onclick="press(1)">1</button><button onclick="press(2)">2</button><button onclick="press(3)">3</button>
+    <button onclick="press(0)">0</button><button class="clear" onclick="clearAll()">C</button>
     <button class="equals" onclick="calculate()">=</button>
   </div>
 
   <script>
     let focused = 'robot';
-
     const robotInput = document.getElementById('robot');
     const dasInput = document.getElementById('das');
     const innerInput = document.getElementById('inner');
@@ -228,15 +188,20 @@
     robotInput.onclick = () => {
       focused = 'robot';
       updateFocusStyle('robot');
+      document.getElementById('robot-box-container').classList.remove('dimmed-input'); // ✅ 추가
     };
+
     dasInput.onclick = () => {
       focused = 'das';
       updateFocusStyle('das');
+      document.getElementById('das-box-container').classList.remove('dimmed-input'); // ✅ 추가
     };
+
     innerInput.onclick = () => {
       focused = 'inner';
       updateFocusStyle('inner');
     };
+
 
     function updateFocusStyle(targetId) {
       ['robot', 'das', 'inner'].forEach(id => {
@@ -254,6 +219,7 @@
     function press(num) {
       const el = document.getElementById(focused);
       el.value = (el.value === '0') ? `${num}` : el.value + num;
+      el.scrollLeft = el.scrollWidth;
     }
 
     function clearAll() {
