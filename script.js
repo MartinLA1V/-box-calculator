@@ -56,6 +56,18 @@ function clearAll() {
   clearFocusStyle();
 }
 
+function backspace() {
+  if (focused === 'inner') return; // ❗ inner일 때는 무시
+
+  const el = document.getElementById(focused);
+  if (!el /* || el.readOnly */) return;
+
+  const current = el.value;
+  el.value = current.length <= 1 ? "0" : current.slice(0, -1);
+}
+
+
+
 function clearInner() {
   innerInput.value = "0";
 }

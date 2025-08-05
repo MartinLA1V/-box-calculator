@@ -158,9 +158,12 @@ body {
 }
 
 .remove-number {
-  font-size: 20px;
-  margin-top: 6px;
-  color: #888888;
+  font-size: 17px;
+  margin: 1px 0 0 100px;
+  padding: 0 3px;
+  background-color: #cbd5e1;
+  color: #666666;
+  border-radius: 10px;
 }
 
 .unit {
@@ -204,19 +207,30 @@ body {
 }
 
 .robot-input,
-.das-input,
-.inner-input {
-  border: 2px solid transparent;
+.das-input {
   background: transparent;
-  width: 80px;
+  width: 130px;
   text-align: center;
   overflow-x: auto;
   white-space: nowrap;
-  padding-right: 10px;
-  border-radius: 10px;
   font-size: 42px;
   font-weight: bold;
-  margin-left: -10px;
+  border: none; /* ✅ 테두리 완전 제거 */
+}
+
+.inner-input {
+  width: 80px;
+  height: 48px;
+  background: transparent;
+  text-align: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  font-size: 32px;
+  font-weight: bold;
+  border: none;
+  border-bottom: 1px solid transparent; /* 공간 확보 */
+  padding-bottom: 6px;
+  box-sizing: border-box;
 }
 
 .robot-input {
@@ -229,14 +243,64 @@ body {
 
 .inner-input {
   color: #333;
-  font-size: 40px;
   text-align: center;
+}
+
+@keyframes blink-border {
+  0%, 100% {
+    border-bottom-color: #afafaf;
+  }
+  50% {
+    border-bottom-color: transparent;
+  }
 }
 
 .robot-input.input-selected,
 .das-input.input-selected,
 .inner-input.input-selected {
   border: none;
-  border-bottom: 1px solid #c9c9c9;
-  border-radius: 0;
+  border-bottom: 1px solid #afafaf;
+  outline: none;
+  background-color: transparent;
+  animation: blink-border 1s infinite;
+}
+
+.clear-inner-btn {
+  padding: 6px 10px;
+  font-size: 14px;
+  color: #333 ;
+  border: 1px solid #999;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.keypad button {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #9c9c9c;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.keypad button:active {
+  background-color: #eee;
+}
+
+.backspace-btn {
+  height: 50px;             /* 원하는 버튼 높이 */
+  font-size: 24px;          /* 아이콘 크기 */
+  padding: 0;               /* 내부 여백 제거 */
+  line-height: 50px;        /* 텍스트를 버튼 중앙에 맞춤 */
+  display: flex;
+  justify-content: center;  /* 가로 정렬 중앙 */
+  align-items: center;      /* 세로 정렬 중앙 */
+  border: 1px solid #999;
+  border-radius: 6px;
+  background-color: #ffffff;
+  cursor: pointer;
 }

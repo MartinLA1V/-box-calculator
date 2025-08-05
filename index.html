@@ -26,7 +26,7 @@
     <div class="inner-pack-row">
       <label for="inner">inner pack</label>
       <input class="inner-input" id="inner" readonly value="0">
-      <button onclick="clearInner()">⟳</button>
+      <button class="clear-inner-btn" onclick="clearInner()">C</button>
     </div>
   </div>
 
@@ -52,12 +52,25 @@
   </div>
 
   <div class="keypad">
-    <button onclick="press(7)">7</button><button onclick="press(8)">8</button><button onclick="press(9)">9</button>
-    <button onclick="press(4)">4</button><button onclick="press(5)">5</button><button onclick="press(6)">6</button>
-    <button onclick="press(1)">1</button><button onclick="press(2)">2</button><button onclick="press(3)">3</button>
-    <button onclick="press(0)">0</button><button class="clear" onclick="clearAll()">C</button>
-    <button class="equals" onclick="calculate()">=</button>
-  </div>
+  <button onclick="press(7)">7</button>
+  <button onclick="press(8)">8</button>
+  <button onclick="press(9)">9</button>
+
+  <button onclick="press(4)">4</button>
+  <button onclick="press(5)">5</button>
+  <button onclick="press(6)">6</button>
+
+  <button onclick="press(1)">1</button>
+  <button onclick="press(2)">2</button>
+  <button onclick="press(3)">3</button>
+
+  <button onclick="press(0)">0</button>
+  <button class="clear" onclick="clearAll()">C</button>
+  <button class="equals" onclick="calculate()">=</button>
+
+  <!-- 🔙 백스페이스 버튼 추가 -->
+  <button class="backspace-btn" onclick="backspace()">←</button>
+</div>
 
   <script src="script.js"></script>
 </body>
