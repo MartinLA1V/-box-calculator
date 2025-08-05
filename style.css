@@ -1,5 +1,7 @@
-/* 전체 CSS 코드 (이전 style 태그 내용) */
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
   margin: 0;
@@ -9,13 +11,16 @@ body {
   margin: 0 auto;
   -webkit-tap-highlight-color: transparent;
 }
+
 .top-inputs {
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
   position: relative;
 }
-.robot-box, .das-box {
+
+.robot-box,
+.das-box {
   width: 48%;
   height: 130px;
   text-align: center;
@@ -27,81 +32,207 @@ body {
   padding: 10px 6px;
   border-radius: 10px;
 }
-.robot-box { background-color: #1e40af; color: white; border: 2px solid transparent; }
-.das-box { background-color: white; border: 1px solid #ccc; }
-.dimmed-input { background-color: #f3f3f3 !important; }
-.dimmed-input input { color: #dddddd !important; }
+
+.robot-box {
+  background-color: #1e40af;
+  color: white;
+  border: 2px solid transparent;
+}
+
+.das-box {
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.dimmed-input {
+  background-color: #f3f3f3 !important;
+}
+
+.dimmed-input input {
+  color: #dddddd !important;
+}
+
 .total-badge {
-  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-  background-color: white; border: 2px solid #666; border-radius: 50%;
-  width: 44px; height: 44px; font-weight: bold; font-size: 16px;
-  display: flex; justify-content: center; align-items: center; z-index: 10;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border: 2px solid #666;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-weight: bold;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
-.inner-pack { font-size: 20px; margin: 14px 0 20px; text-align: center; }
+
+.inner-pack {
+  font-size: 20px;
+  margin: 14px 0 20px;
+  text-align: center;
+}
+
 .inner-pack-row {
-  display: flex; align-items: center; flex-direction: row;
-  gap: 10px; justify-content: center; width: fit-content; margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  width: fit-content;
+  margin: 0 auto;
 }
-.inner-pack-row label { white-space: nowrap; }
+
+.inner-pack-row label {
+  white-space: nowrap;
+}
+
 .inner-pack button {
-  padding: 6px 10px; font-size: 14px; border: 1px solid #999;
-  border-radius: 6px; background-color: white; cursor: pointer;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #999;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
 }
-.result-row { display: flex; justify-content: space-between; margin: 10px 0; }
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
 .result-box {
-  width: 48%; border-radius: 10px;
-  display: flex; flex-direction: column;
-  justify-content: center; align-items: center;
-  text-align: center; transition: background-color 0.3s, color 0.3s;
+  width: 48%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s;
   padding: 10px 6px;
 }
-#robot-result { background-color: #1e40af; }
-#das-result { background-color: #ffffff; border: 1px solid #ccc; }
-#robot-result.dimmed { background-color: #f3f3f3; }
+
+#robot-result {
+  background-color: #1e40af;
+}
+
+#das-result {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+}
+
+#robot-result.dimmed {
+  background-color: #f3f3f3;
+}
+
 #das-result.dimmed {
   background-color: #f3f4f6;
   border-color: #ddd;
 }
+
 .result-box.dimmed .big-number,
 .result-box.dimmed .small-number,
 .result-box.dimmed .remove-number {
   color: #b0b0b0 !important;
 }
+
 .big-number {
-  font-size: 48px; font-weight: bold; color: white;
+  font-size: 48px;
+  font-weight: bold;
+  color: white;
 }
-#das-result .big-number, #das-result .small-number {
+
+#das-result .big-number,
+#das-result .small-number {
   color: #333;
 }
-.small-number { font-size: 32px; color: #cbd5e1; }
+
+.small-number {
+  font-size: 32px;
+  color: #cbd5e1;
+}
+
 .remove-number {
-  font-size: 20px; margin-top: 6px; color: #888888;
+  font-size: 20px;
+  margin-top: 6px;
+  color: #888888;
 }
-.unit { font-size: 16px; margin-left: 4px; }
+
+.unit {
+  font-size: 16px;
+  margin-left: 4px;
+}
+
 .flex-line {
-  display: flex; justify-content: center; align-items: baseline; gap: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px;
 }
+
 .keypad {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px; margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 20px;
 }
+
 .keypad button {
-  font-size: 28px; font-weight: bold; color: #333;
-  padding: 16px; background: #ffffff;
-  border: 1px solid #9c9c9c; border-radius: 6px; cursor: pointer;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #9c9c9c;
+  border-radius: 6px;
+  cursor: pointer;
 }
-.keypad .equals { background-color: #1e40af; color: white; }
-.keypad .clear { background: #ffffff; border: 1px solid #9c9c9c; }
-.robot-input, .das-input, .inner-input {
-  border: 2px solid transparent; background: transparent;
-  width: 100%; text-align: center;
-  overflow-x: auto; white-space: nowrap;
-  padding-right: 10px; border-radius: 10px;
-  font-size: 42px; font-weight: bold; margin-left: -10px;
+
+.keypad .equals {
+  background-color: #1e40af;
+  color: white;
 }
-.robot-input { color: white; }
-.das-input { color: #333; }
-.inner-input { color: #333; font-size: 40px; text-align: center; }
+
+.keypad .clear {
+  background: #ffffff;
+  border: 1px solid #9c9c9c;
+}
+
+.robot-input,
+.das-input,
+.inner-input {
+  border: 2px solid transparent;
+  background: transparent;
+  width: 80px;
+  text-align: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-right: 10px;
+  border-radius: 10px;
+  font-size: 42px;
+  font-weight: bold;
+  margin-left: -10px;
+}
+
+.robot-input {
+  color: white;
+}
+
+.das-input {
+  color: #333;
+}
+
+.inner-input {
+  color: #333;
+  font-size: 40px;
+  text-align: center;
+}
+
 .robot-input.input-selected,
 .das-input.input-selected,
 .inner-input.input-selected {
