@@ -70,7 +70,51 @@
 
   <!-- 🔙 백스페이스 버튼 추가 -->
   <button class="backspace-btn" onclick="backspace()">←</button>
+
+  <!-- Unshipped 버튼 추가 -->
+  <button class="unshipped-btn" onclick="handleUnshipped()">U</button>
+
 </div>
+
+<!-- Unshipped 팝업창 -->
+<div id="unshipped-modal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeUnshipped()">×</button>
+    <h2>Unshipped</h2>
+
+<!-- ✅ 총 피킹 수량만 미리보기 -->
+<div class="input-preview">
+  <p id="preview-total-picking"><strong>총 피킹 수량: 0개</strong></p>
+  <p id="extra-picking-info"><strong>추가 피킹 수량: 0개</strong></p>
+</div>
+
+    <div class="popup-inputs">
+      <label for="unshipped-robot">robot 수량:</label>
+
+      <div class="input-with-info">
+        <input type="number" id="unshipped-robot" value="0" oninput="updateBoxInfo()">
+        <span id="robot-box-info" class="box-info">0box / 0ea</span>
+      </div>
+
+      <label for="unshipped-das">das 수량:</label>
+      <div class="input-with-info">
+        <input type="number" id="unshipped-das" value="0" oninput="updateBoxInfo()">
+        <span id="das-box-info" class="box-info">0box / 0ea</span>
+      </div>
+
+      <label for="unshipped-inner">inner pack:</label>
+      <input type="number" id="unshipped-inner" value="1" oninput="updateBoxInfo()">
+
+      <label for="unshipped-available">현재 피킹 가능한 수량:</label>
+      <input type="number" id="unshipped-available" value="0">
+    </div>
+
+    <button onclick="calculateUnshipped()">계산</button>
+
+    <div id="unshipped-result" class="popup-result">계산 결과가 여기에 표시됩니다.</div>
+  </div>
+</div>
+
 
   <script src="script.js"></script>
 </body>

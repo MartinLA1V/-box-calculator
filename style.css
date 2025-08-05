@@ -304,3 +304,96 @@ body {
   background-color: #ffffff;
   cursor: pointer;
 }
+
+.unshipped-btn {
+  height: 50px;
+  font-weight: bold;
+  background-color: #fffbeb;
+  border: 1px solid #999;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 320px;
+  text-align: center;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.popup-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.popup-inputs label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.popup-inputs input {
+  height: 36px;
+  font-size: 16px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.popup-result {
+  margin-top: 10px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.input-preview {
+  font-size: 14px;
+  background: #f9f9f9;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.input-with-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.box-info {
+  font-size: 13px;
+  color: #555;
+  white-space: nowrap;
+}
+
