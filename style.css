@@ -10,8 +10,8 @@ body {
   margin: 0;
   padding: 20px;
   background: #f4f4f4;
-  max-width: 360px;
-  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
   -webkit-tap-highlight-color: transparent;
 }
 
