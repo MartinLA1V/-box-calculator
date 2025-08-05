@@ -4,6 +4,9 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+  overflow: hidden;
+  position: fixed; /* 뷰포트 고정 */
+  touch-action: none; /* 터치 스크롤 방지 */
   margin: 0;
   padding: 20px;
   background: #f4f4f4;
