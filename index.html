@@ -2,7 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+  />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>PB</title>
@@ -11,110 +14,110 @@
 <body>
 
   <div class="top-inputs">
+    <!-- ROBOT 패널 -->
     <div class="robot-box" id="robot-box-container">
-      <label>robot</label><br>
+      <label>ROBOT SORTER</label><br>
       <input class="robot-input" id="robot" readonly value="0">
+
+      <!-- 결과(패널 내부) -->
+      <div class="result-box" id="robot-result" aria-hidden="true">
+        <div class="big-number flex-line">
+          <span id="robot-box">0</span><span class="unit">box</span>
+        </div>
+        <div class="small-number flex-line">
+          <span id="robot-rem">0</span><span class="unit">ea</span>
+        </div>
+        <div class="remove-number">-<span id="robot-remove">0</span></div>
+      </div>
     </div>
+
+    <!-- 중앙 합계 배지 -->
     <div class="total-badge" id="total">0</div>
+
+    <!-- DAS 패널 -->
     <div class="das-box" id="das-box-container">
-      <label>das</label><br>
+      <label>DAS</label><br>
       <input class="das-input" id="das" readonly value="0">
+
+      <!-- 결과(패널 내부) -->
+      <div class="result-box" id="das-result" aria-hidden="true">
+        <div class="big-number flex-line">
+          <span id="das-box">0</span><span class="unit">box</span>
+        </div>
+        <div class="small-number flex-line">
+          <span id="das-rem">0</span><span class="unit">ea</span>
+        </div>
+        <div class="remove-number">-<span id="das-remove">0</span></div>
+      </div>
     </div>
   </div>
 
   <div class="inner-pack">
     <div class="inner-pack-row">
-      <label for="inner">inner pack</label>
+      <label for="inner">INNER PACK</label>
       <input class="inner-input" id="inner" readonly value="0">
       <button class="clear-inner-btn" onclick="clearInner()">C</button>
     </div>
   </div>
 
-  <div class="result-row">
-    <div class="result-box" id="robot-result">
-      <div class="big-number flex-line">
-        <span id="robot-box">0</span><span class="unit">box</span>
-      </div>
-      <div class="small-number flex-line">
-        <span id="robot-rem">0</span><span class="unit">ea</span>
-      </div>
-      <div class="remove-number">-<span id="robot-remove">0</span></div>
-    </div>
-    <div class="result-box" id="das-result">
-      <div class="big-number flex-line">
-        <span id="das-box">0</span><span class="unit">box</span>
-      </div>
-      <div class="small-number flex-line">
-        <span id="das-rem">0</span><span class="unit">ea</span>
-      </div>
-      <div class="remove-number">-<span id="das-remove">0</span></div>
-    </div>
-  </div>
-
+  <!-- 키패드 -->
   <div class="keypad">
-  <button onclick="press(7)">7</button>
-  <button onclick="press(8)">8</button>
-  <button onclick="press(9)">9</button>
+    <button onclick="press(7)">7</button>
+    <button onclick="press(8)">8</button>
+    <button onclick="press(9)">9</button>
 
-  <button onclick="press(4)">4</button>
-  <button onclick="press(5)">5</button>
-  <button onclick="press(6)">6</button>
+    <button onclick="press(4)">4</button>
+    <button onclick="press(5)">5</button>
+    <button onclick="press(6)">6</button>
 
-  <button onclick="press(1)">1</button>
-  <button onclick="press(2)">2</button>
-  <button onclick="press(3)">3</button>
+    <button onclick="press(1)">1</button>
+    <button onclick="press(2)">2</button>
+    <button onclick="press(3)">3</button>
 
-  <button onclick="press(0)">0</button>
-  <button class="clear" onclick="clearAll()">C</button>
-  <button class="equals" onclick="calculate()">=</button>
+    <button onclick="press(0)">0</button>
+    <button class="clear" onclick="clearAll()">C</button>
+    <button class="equals" onclick="calculate()">=</button>
 
-  <!-- 🔙 백스페이스 버튼 추가 -->
-  <button class="backspace-btn" onclick="backspace()">←</button>
-
-  <!-- Unshipped 버튼 추가 -->
-  <button class="unshipped-btn" onclick="handleUnshipped()">U</button>
-
-</div>
-
-<!-- Unshipped 팝업창 -->
-<div id="unshipped-modal" class="modal">
-  <div class="modal-content">
-    <button class="close-btn" onclick="closeUnshipped()">×</button>
-    <h2>Unshipped</h2>
-
-<!-- ✅ 총 피킹 수량만 미리보기 -->
-<div class="input-preview">
-  <p id="preview-total-picking"><strong>총 피킹 수량: 0개</strong></p>
-  <p id="extra-picking-info"><strong>추가 피킹 수량: 0개</strong></p>
-</div>
-
-    <div class="popup-inputs">
-      <label for="unshipped-robot">robot 수량:</label>
-
-      <div class="input-with-info">
-        <input type="number" id="unshipped-robot" value="0" oninput="updateBoxInfo()">
-        <span id="robot-box-info" class="box-info">0box / 0ea</span>
-      </div>
-
-      <label for="unshipped-das">das 수량:</label>
-      <div class="input-with-info">
-        <input type="number" id="unshipped-das" value="0" oninput="updateBoxInfo()">
-        <span id="das-box-info" class="box-info">0box / 0ea</span>
-      </div>
-
-      <label for="unshipped-inner">inner pack:</label>
-      <input type="number" id="unshipped-inner" value="1" oninput="updateBoxInfo()">
-
-      <label for="unshipped-available">현재 피킹 가능한 수량:</label>
-      <input type="number" id="unshipped-available" value="0">
-    </div>
-
-    <button onclick="calculateUnshipped()">계산</button>
-
-    <div id="unshipped-result" class="popup-result">계산 결과가 여기에 표시됩니다.</div>
+    <button class="backspace-btn" onclick="backspace()">←</button>
+    <button class="unshipped-btn" onclick="handleUnshipped()">U</button>
   </div>
-</div>
 
+  <!-- Unshipped 팝업 -->
+  <div id="unshipped-modal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeUnshipped()">×</button>
+      <h2>Unshipped</h2>
+
+      <div class="input-preview">
+        <p id="preview-total-picking"><strong>총 피킹 수량: 0개</strong></p>
+        <p id="extra-picking-info"><strong>추가 피킹 수량: 0개</strong></p>
+      </div>
+
+      <div class="popup-inputs">
+        <label for="unshipped-robot">robot 수량:</label>
+        <div class="input-with-info">
+          <input type="number" id="unshipped-robot" value="0" oninput="updateBoxInfo()">
+          <span id="robot-box-info" class="box-info">0box / 0ea</span>
+        </div>
+
+        <label for="unshipped-das">das 수량:</label>
+        <div class="input-with-info">
+          <input type="number" id="unshipped-das" value="0" oninput="updateBoxInfo()">
+          <span id="das-box-info" class="box-info">0box / 0ea</span>
+        </div>
+
+        <label for="unshipped-inner">inner pack:</label>
+        <input type="number" id="unshipped-inner" value="1" oninput="updateBoxInfo()">
+
+        <label for="unshipped-available">현재 피킹 가능한 수량:</label>
+        <input type="number" id="unshipped-available" value="0">
+      </div>
+
+      <button onclick="calculateUnshipped()">계산</button>
+
+      <div id="unshipped-result" class="popup-result">계산 결과가 여기에 표시됩니다.</div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
