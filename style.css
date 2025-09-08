@@ -12,22 +12,19 @@
 /* iOS 100vh 보정 */
 html { height: -webkit-fill-available; }
 
-/* ✅ iOS(WebKit/Whale/Safari)에서 확장 영역이 안 잘리도록 */
+/* ✅ iOS/WebKit 동적 뷰포트 대응 */
 body {
   font-family: 'NotoSansKR', -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 20px;
   background: #ffffff;
 
-  /* 주소창 상태 반영 동적 뷰포트 사용 */
   min-height: calc(var(--vh, 1vh) * 100);
   width: 100%;
 
-  /* 확장 시 스크롤 가능해야 잘리지 않음 */
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 
-  /* 하단 홈 인디케이터/주소창과 겹침 방지 */
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
 
   -webkit-tap-highlight-color: transparent;
@@ -41,7 +38,7 @@ body {
   margin-bottom: 10px;
   position: relative;
   align-items: stretch;
-  z-index: 1; /* 키패드 아래로 깔리지 않도록 기준 z-index */
+  z-index: 1;
 }
 
 /* 패널 공통 */
@@ -52,7 +49,7 @@ body {
   max-height: 130px;            /* 접힌 상태 */
   overflow: hidden;
   transition: max-height .35s ease;
-  -webkit-transition: max-height .35s ease; /* iOS 호환 */
+  -webkit-transition: max-height .35s ease;
   will-change: max-height;
   font-size: 13px;
   padding: 10px;
@@ -67,15 +64,13 @@ body {
 
 /* 펼친 상태 */
 .robot-box.expanded,
-.das-box.expanded {
-  max-height: 380px;            /* 필요시 조정 */
-}
+.das-box.expanded { max-height: 380px; }
 
 /* 입력 필드 공통 (사파리 flex-auto 폭 확장 방지) */
 .robot-input,
 .das-input,
 .inner-input {
-  display: inline-block;   /* 내용 너비만 차지 */
+  display: inline-block;
   padding: 0; margin: 0;
   border: none; border-radius: 0;
   background-color: transparent;
@@ -83,7 +78,7 @@ body {
   width: auto; max-width: 100%;
   overflow-x: auto; white-space: nowrap;
   box-sizing: content-box; outline: none;
-  flex: 0 0 auto;          /* flex 늘어남/줄어듦 방지 */
+  flex: 0 0 auto;
   -webkit-appearance: none;
 }
 
@@ -96,7 +91,7 @@ body {
   box-sizing: border-box;
 }
 
-/* 선택 상태 깜빡이 (입력 요소에만 적용) */
+/* 선택 상태 깜빡이 */
 @keyframes blink-border {
   0%, 100% { border-bottom-color: #afafaf; }
   50%      { border-bottom-color: transparent; }
@@ -117,11 +112,11 @@ body {
 /* 중앙 총합 배지 */
 .total-badge {
   position: absolute;
-  top: -10px; left: 50%; transform: translateX(-50%);
-  background-color: white; width: 44px; height: 44px;
-  font-weight: bold; font-size: 16px;
+  top: 60px; left: 50%; transform: translateX(-50%);
+  background-color: white; width: 65px; height: 41px;
+  font-weight: bold; font-size: 28px;
   display: none; justify-content: center; align-items: center; z-index: 10;
-  pointer-events: none; /* 터치 가로채지 않도록 */
+  pointer-events: none;
 }
 
 /* inner pack 영역 */
@@ -138,23 +133,25 @@ body {
   transition: background-color .2s, color .2s;
 }
 
-/* 패널 내부 결과 박스 */
+/* =========================
+   ✅ 결과 박스: 모서리 각지게 + 좌측 정렬
+   ========================= */
 .result-box {
-  display: none;        /* JS에서 flex로 전환 */
+  display: none;            /* JS에서 flex로 전환 */
   margin-top: 12px;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 0;         /* ← 모서리 각지게 */
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;  /* ← 왼쪽 정렬 */
+  text-align: left;         /* ← 왼쪽 정렬 */
   transition: opacity .25s ease, transform .25s ease, background-color .3s, color .3s;
   -webkit-transition: opacity .25s ease, -webkit-transform .25s ease, background-color .3s, color .3s;
   opacity: 0;
   transform: translateY(-4px);
   -webkit-transform: translateY(-4px);
-  padding: 10px 6px;
 }
+
 .robot-box.expanded .result-box,
 .das-box.expanded .result-box {
   opacity: 1;
@@ -162,29 +159,40 @@ body {
   -webkit-transform: translateY(0);
 }
 
-#robot-result { background-color: #1e40af; }
-#das-result   { background-color: #ffffff; border: 1px solid #ccc; }
+#robot-result { background-color: #2b308b; }
+#das-result   { background-color: #000000; }
 #robot-result.dimmed { background-color: #f3f3f3; }
 #das-result.dimmed   { background-color: #f3f4f6; border-color: #ddd; }
 .result-box.dimmed .big-number,
 .result-box.dimmed .small-number,
 .result-box.dimmed .remove-number { color: #ffffff !important; }
 
+/* 숫자/단위: 좌측 정렬 라인 */
+.flex-line {
+  display: flex;
+  justify-content: flex-start;  /* ← 왼쪽 정렬 */
+  align-items: baseline;
+  gap: 6px;
+}
+
 /* 숫자 결과 표시 */
-.big-number   { font-size: 48px; font-weight: bold; color: white; }
-#das-result .big-number, #das-result .small-number { color: #333; }
-.small-number { font-size: 32px; color: #cbd5e1; }
+.big-number   { font-size: 60px; font-weight: bold; color: white; }
+#das-result .big-number,
+#das-result .small-number { color: #ffffff; }
+.small-number { font-size: 50px; font-weight: bold; color: #ffffff; margin-top: -10px; padding: 0 0 10px 0;}
 .remove-number {
-  font-size: 17px; margin: 1px 0 0 100px; padding: 0 3px;
-  background-color: #cbd5e1; color: #ffffff; border-radius: 10px;
+  font-size: 25px;
+  font-weight: normal;
+  margin: -45px 0 0 110px;       /* ← 왼쪽으로 붙임 */
+  color: #ffffff;
+  align-self: flex-start;  /* ← 왼쪽 정렬 유지 */
 }
 .unit { font-size: 16px; margin-left: 4px; }
-.flex-line { display: flex; justify-content: center; align-items: baseline; gap: 6px; }
 
 /* 키패드 (항상 위 레이어) */
 .keypad {
   position: relative;
-  z-index: 100; /* 패널이 겹쳐져도 버튼 터치 우선 */
+  z-index: 100;
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 0; margin-top: 20px;
 }
@@ -194,12 +202,12 @@ body {
   border-radius: 0; cursor: pointer; width: 100%; height: 100%; box-sizing: border-box;
 }
 .keypad .equals { background-color: #1e40af; color: white; }
-.keypad .clear  { background: #ffffff; border: 1px solid #9c9c9c; }
+.keypad .clear  { background: #ffffff; border: 0.5px solid #9c9c9c; }
 .keypad button:active { background-color: #eee; }
 
 /* 기타 버튼 */
 .backspace-btn { height: 50px; font-size: 24px; padding: 0; line-height: 50px;
-  display: flex; justify-content: center; align-items: center; border: 1px solid #999;
+  display: flex; justify-content: center; align-items: center; border: 0.5px solid #999;
   border-radius: 6px; background-color: #ffffff; cursor: pointer; }
 .unshipped-btn { height: 50px; font-weight: bold; background-color: #fffbeb; border: 1px solid #999;
   border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }

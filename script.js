@@ -3,9 +3,7 @@ const robotInput = document.getElementById('robot');
 const dasInput   = document.getElementById('das');
 const innerInput = document.getElementById('inner');
 
-/* =========================
-   0) 뷰포트 높이 동기화 (iOS 주소창 대응)
-   ========================= */
+/* 0) 뷰포트 높이 동기화 (iOS 주소창 대응) */
 function setVhUnit() {
   const h = (window.visualViewport?.height ?? window.innerHeight) * 0.01;
   document.documentElement.style.setProperty('--vh', `${h}px`);
@@ -17,9 +15,7 @@ if (window.visualViewport) {
   window.visualViewport.addEventListener('scroll', setVhUnit);
 }
 
-/* =========================
-   1) 입력 필드 자동 너비 조절
-   ========================= */
+/* 1) 입력 필드 자동 너비 */
 function autoResizeInput(el) {
   const span = document.createElement("span");
   span.style.visibility = "hidden";
@@ -32,60 +28,38 @@ function autoResizeInput(el) {
   document.body.removeChild(span);
 }
 
-/* =========================
-   2) 포커스 표시 토글
-   ========================= */
-robotInput.onclick = () => {
-  focused = 'robot';
-  updateFocusStyle('robot');
-  document.getElementById('robot-box-container').classList.remove('dimmed-input');
-};
-dasInput.onclick   = () => {
-  focused = 'das';
-  updateFocusStyle('das');
-  document.getElementById('das-box-container').classList.remove('dimmed-input');
-};
-innerInput.onclick = () => {
-  focused = 'inner';
-  updateFocusStyle('inner');
-};
+/* 2) 포커스 표시 */
+robotInput.onclick = () => { focused = 'robot'; updateFocusStyle('robot'); document.getElementById('robot-box-container').classList.remove('dimmed-input'); };
+dasInput.onclick   = () => { focused = 'das';   updateFocusStyle('das');   document.getElementById('das-box-container').classList.remove('dimmed-input'); };
+innerInput.onclick = () => { focused = 'inner'; updateFocusStyle('inner'); };
 
 function updateFocusStyle(targetId) {
-  ['robot', 'das', 'inner'].forEach(id => {
-    document.getElementById(id).classList.remove('input-selected');
-  });
+  ['robot', 'das', 'inner'].forEach(id => document.getElementById(id).classList.remove('input-selected'));
   document.getElementById(targetId).classList.add('input-selected');
 }
 function clearFocusStyle() {
-  ['robot', 'das', 'inner'].forEach(id => {
-    document.getElementById(id).classList.remove('input-selected');
-  });
+  ['robot', 'das', 'inner'].forEach(id => document.getElementById(id).classList.remove('input-selected'));
 }
 
-/* =========================
-   3) 숫자 입력/삭제/초기화
-   ========================= */
+/* 3) 숫자 입력/삭제/초기화 */
 function press(num) {
   const el = document.getElementById(focused);
   el.value = (el.value === '0') ? `${num}` : el.value + num;
   el.scrollLeft = el.scrollWidth;
   autoResizeInput(el);
 }
-
 function backspace() {
-  if (focused === 'inner') return; // inner는 백스페이스 비활성화
+  if (focused === 'inner') return;
   const el = document.getElementById(focused);
   if (!el) return;
   const current = el.value;
   el.value = current.length <= 1 ? "0" : current.slice(0, -1);
   autoResizeInput(el);
 }
-
 function clearInner() {
   innerInput.value = "0";
   autoResizeInput(innerInput);
 }
-
 function clearAll() {
   robotInput.value = "0";
   dasInput.value   = "0";
@@ -111,9 +85,7 @@ function clearAll() {
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
 }
 
-/* =========================
-   4) 계산 & 확장 애니메이션
-   ========================= */
+/* 4) 계산 & 확장 */
 function calculate() {
   const robot = parseInt(robotInput.value) || 0;
   const das   = parseInt(dasInput.value)   || 0;
@@ -129,15 +101,13 @@ function calculate() {
   totalEl.textContent = total;
   totalEl.style.display = 'flex';
 
-  // 결과 보이기 → 강제 리플로우 → 다음 프레임에 확장 (WebKit 스킵 방지)
+  // 결과 보이기 → 강제 리플로우 → 다음 프레임에 확장
   ['robot', 'das'].forEach(id => {
     const res = document.getElementById(`${id}-result`);
     const box = document.getElementById(`${id}-box-container`);
-    res.style.display = 'flex';         // 1) 보이기
-    void box.offsetHeight;              // 2) 강제 리플로우
-    requestAnimationFrame(() => {       // 3) 다음 프레임에 class로 트랜지션 시작
-      box.classList.add('expanded');
-    });
+    res.style.display = 'flex';
+    void box.offsetHeight;
+    requestAnimationFrame(() => { box.classList.add('expanded'); });
   });
 
   // 값 계산/표시
@@ -165,9 +135,7 @@ function calculate() {
   clearFocusStyle();
 }
 
-/* =========================
-   5) Unshipped 모달
-   ========================= */
+/* 5) Unshipped 모달 */
 function closeUnshipped() {
   document.getElementById("unshipped-modal").style.display = "none";
 }
@@ -261,9 +229,7 @@ function updateBoxInfo() {
   document.getElementById("das-box-info").innerText   = `${dasBox}box / ${dasEa}ea`;
 }
 
-/* =========================
-   6) iOS(WebKit) 터치 → 클릭 위임 (간헐적 click 스킵 대응)
-   ========================= */
+/* 6) iOS(WebKit) 터치 → 클릭 위임 (간헐적 click 스킵 대응) */
 (function ensureIOSClick() {
   const selectors = [
     '.keypad button', '.clear-inner-btn', '.backspace-btn',
@@ -272,16 +238,13 @@ function updateBoxInfo() {
   const buttons = document.querySelectorAll(selectors.join(','));
   buttons.forEach(btn => {
     btn.addEventListener('touchend', (e) => {
-      // 터치가 클릭으로 이어지지 않는 케이스 보완
       if (e.cancelable) e.preventDefault();
       btn.click();
     }, { passive: false });
   });
 })();
 
-/* =========================
-   7) 초기 상태
-   ========================= */
+/* 7) 초기 상태 */
 window.onload = () => {
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
   document.getElementById('robot-result').style.display = 'none';
