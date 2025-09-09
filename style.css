@@ -16,7 +16,6 @@ html { height: -webkit-fill-available; }
 /* ✅ 전체 기본 글꼴을 NIAGSOL로 전환 */
 body {
   /* 아래 줄만 교체: 'NotoSansKR' → 'NIAGSOL' */
-  font-family: 'NIAGSOL', -apple-system, BlinkMacSystemFont, sans-serif; /* ← 폴백 유지 */
   margin: 0;
   padding: 20px;
   background: #ffffff;
@@ -69,11 +68,11 @@ body {
 .robot-input,
 .das-input,
 .inner-input {
+  font-family: 'NIAGSOL', -apple-system, BlinkMacSystemFont, sans-serif; /* ← 폴백 유지 */
   display: inline-block;
   padding: 0; margin: 0;
   border: none; border-radius: 0;
   background-color: transparent;
-  font-weight: bold;
   width: auto; max-width: 100%;
   overflow-x: auto; white-space: nowrap;
   box-sizing: content-box; outline: none;
