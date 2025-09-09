@@ -1,9 +1,8 @@
 * { box-sizing: border-box; }
 
 @font-face {
-  font-family: 'NotoSansKR';
-  src: url('/fonts/NotoSansKR.woff2') format('woff2'),
-       url('/fonts/NotoSansKR.woff') format('woff');
+  font-family: 'NIAGSOL';
+  src: url('/fonts/NIAGSOL.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -14,7 +13,7 @@ html { height: -webkit-fill-available; }
 
 /* ✅ iOS/WebKit 동적 뷰포트 대응 */
 body {
-  font-family: 'NotoSansKR', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'NIAGSOL';
   margin: 0;
   padding: 20px;
   background: #ffffff;
