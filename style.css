@@ -2,7 +2,9 @@
 
 @font-face {
   font-family: 'NIAGSOL';
-  src: url('./fonts/NIAGSOL.woff2') format('woff2');
+  src: url('./fonts/NIAGSOL.woff2') format('woff2'),
+       url('./fonts/NIAGSOL.woff') format('woff'),
+       url('./fonts/NIAGSOL.TTF') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -11,24 +13,22 @@
 /* iOS 100vh 보정 */
 html { height: -webkit-fill-available; }
 
-/* ✅ iOS/WebKit 동적 뷰포트 대응 */
+/* ✅ 전체 기본 글꼴을 NIAGSOL로 전환 */
 body {
-  font-family: 'NIAGSOL';
+  /* 아래 줄만 교체: 'NotoSansKR' → 'NIAGSOL' */
+  font-family: 'NIAGSOL', -apple-system, BlinkMacSystemFont, sans-serif; /* ← 폴백 유지 */
   margin: 0;
   padding: 20px;
   background: #ffffff;
-
   min-height: calc(var(--vh, 1vh) * 100);
   width: 100%;
-
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
-
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
+
 
 /* 상단 두 패널 */
 .top-inputs {
