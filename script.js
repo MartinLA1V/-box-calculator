@@ -56,14 +56,33 @@ function backspace() {
   el.value = current.length <= 1 ? "0" : current.slice(0, -1);
   autoResizeInput(el);
 }
-function clearInner() {
-  innerInput.value = "0";
-  autoResizeInput(innerInput);
+
+// 🧩 공통 기본값 상수
+const DEFAULT_INNER = 12;
+
+// 🧩 inner 값/기본값/속성값을 동시에 세팅하는 유틸
+function setInner(v = DEFAULT_INNER) {
+  // 현재값
+  innerInput.value = String(v);
+  // 폼 리셋/기본값 참조 대비
+  innerInput.defaultValue = String(v);
+  // 속성 자체도 바꿔서 DOM 어트리뷰트 기준 로직이 있어도 안전
+  innerInput.setAttribute('value', String(v));
+  // 가변 폭 조정 함수 호출(있다면)
+  if (typeof autoResizeInput === 'function') autoResizeInput(innerInput);
 }
+
+function clearInner() {
+  // ✅ 항상 12로
+  setInner(DEFAULT_INNER);
+}
+
 function clearAll() {
   robotInput.value = "0";
   dasInput.value   = "0";
-  innerInput.value = "0";
+
+  // 일단 12로
+  setInner(DEFAULT_INNER);
 
   const totalEl = document.getElementById('total');
   totalEl.textContent = "0";
@@ -82,14 +101,17 @@ function clearAll() {
   });
 
   clearFocusStyle();
+
+  // 자동 리사이즈가 값을 건드려도, 마지막에 다시 확정
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
+  setInner(DEFAULT_INNER); // ✅ 최종 보정(현재값/기본값/속성 모두)
 }
 
 /* 4) 계산 & 확장 */
 function calculate() {
   const robot = parseInt(robotInput.value) || 0;
   const das   = parseInt(dasInput.value)   || 0;
-  const inner = parseInt(innerInput.value) || 0;
+  const inner = parseInt(innerInput.value || DEFAULT_INNER) || DEFAULT_INNER;
 
   if (inner === 0) {
     alert("inner pack 수량은 1 이상이어야 합니다.");
@@ -246,6 +268,9 @@ function updateBoxInfo() {
 
 /* 7) 초기 상태 */
 window.onload = () => {
+  // ✅ 시작할 때부터 12로 확정(현재값/기본값/속성 모두)
+  setInner(DEFAULT_INNER);
+
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
   document.getElementById('robot-result').style.display = 'none';
   document.getElementById('das-result').style.display   = 'none';
@@ -253,3 +278,4 @@ window.onload = () => {
   document.getElementById('robot-box-container').classList.remove('expanded');
   document.getElementById('das-box-container').classList.remove('expanded');
 };
+

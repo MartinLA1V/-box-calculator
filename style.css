@@ -1,10 +1,20 @@
 * { box-sizing: border-box; }
 
 @font-face {
-  font-family: 'NIAGSOL';
-  src: url('./fonts/NIAGSOL.woff2') format('woff2'),
-       url('./fonts/NIAGSOL.woff') format('woff'),
-       url('./fonts/NIAGSOL.TTF') format('truetype');
+  font-family: 'AGENCYR';
+  src: url('./font/AGENCYR.woff2') format('woff2'),
+       url('./fonts/AGENCYR.woff') format('woff'),
+       url('./fonts/AGENCYR.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AGENCYB';
+  src: url('./font/AGENCYB.woff2') format('woff2'),
+       url('./fonts/AGENCYB.woff') format('woff'),
+       url('./fonts/AGENCYB.TTF') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -33,7 +43,7 @@ body {
 .top-inputs {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 100px;
   position: relative;
   align-items: stretch;
   z-index: 1;
@@ -66,9 +76,21 @@ body {
 
 /* 입력 필드 공통 (사파리 flex-auto 폭 확장 방지) */
 .robot-input,
-.das-input,
+.das-input {
+  font-family: 'AGENCYR', -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: 0; margin: 0;
+  border: none; border-radius: 0;
+  background-color: transparent;
+  width: auto; max-width: 100%;
+  overflow-x: auto; white-space: nowrap;
+  box-sizing: content-box; outline: none;
+  flex: 0 0 auto;
+  -webkit-appearance: none;
+  margin-top: -15px;
+}
+
 .inner-input {
-  font-family: 'NIAGSOL', -apple-system, BlinkMacSystemFont, sans-serif; /* ← 폴백 유지 */
+  font-family: 'AGENCYB', -apple-system, BlinkMacSystemFont, sans-serif;
   display: inline-block;
   padding: 0; margin: 0;
   border: none; border-radius: 0;
@@ -78,13 +100,18 @@ body {
   box-sizing: content-box; outline: none;
   flex: 0 0 auto;
   -webkit-appearance: none;
+  margin-top: 1px;
 }
 
+
 /* 개별 입력 필드 */
-.robot-input { font-size: 60px; color: white; text-align: left; }
-.das-input   { font-size: 60px; color: white !important; text-align: right; }
+.robot-input { font-size: 80px; color: white; text-align: left; }
+.das-input   { font-size: 80px; color: white !important; text-align: right; }
+
 .inner-input {
-  width: 80px; height: 48px; font-size: 32px; color: #333;
+  width: 80px; height: 48px; 
+  font-size: 32px;
+  color: #333;
   text-align: center; border-bottom: 1px solid transparent; padding-bottom: 6px;
   box-sizing: border-box;
 }
@@ -110,15 +137,21 @@ body {
 /* 중앙 총합 배지 */
 .total-badge {
   position: absolute;
-  top: 60px; left: 50%; transform: translateX(-50%);
-  background-color: white; width: 65px; height: 41px;
-  font-weight: bold; font-size: 28px;
+  top: 33px; left: 50%; transform: translateX(-50%);
+  font-family: 'AGENCYB', -apple-system, BlinkMacSystemFont, sans-serif; /* ← 폴백 유지 */
+  background-color: white; width: 55px; height: 38px;
+  font-weight: bold; font-size: 32px;
   display: none; justify-content: center; align-items: center; z-index: 10;
   pointer-events: none;
 }
 
 /* inner pack 영역 */
-.inner-pack { font-size: 20px; margin: 14px 0 20px; text-align: center; }
+.inner-pack { 
+  font-size: 18px; 
+  font-weight: bold;
+  margin: -80px 0 20px; 
+  text-align: center; }
+  
 .inner-pack-row {
   display: flex; align-items: center; flex-direction: row; gap: 10px;
   justify-content: center; width: fit-content; margin: 0 auto;
@@ -157,6 +190,12 @@ body {
   -webkit-transform: translateY(0);
 }
 
+/* 결과가 펼쳐졌을 때만 입력값 크기 축소 */
+.robot-box.expanded .robot-input,
+.das-box.expanded .das-input {
+  font-size: 40px;   /* 결과가 보일 때 자동으로 작아짐 */
+}
+
 #robot-result { background-color: #2b308b; }
 #das-result   { background-color: #000000; }
 #robot-result.dimmed { background-color: #f3f3f3; }
@@ -174,18 +213,19 @@ body {
 }
 
 /* 숫자 결과 표시 */
-.big-number   { font-size: 60px; font-weight: bold; color: white; }
+.big-number   { font-family: 'AGENCYR', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 60px; font-weight: bold; color: white; }
 #das-result .big-number,
 #das-result .small-number { color: #ffffff; }
-.small-number { font-size: 50px; font-weight: bold; color: #ffffff; margin-top: -10px; padding: 0 0 10px 0;}
+.small-number { font-family: 'AGENCYR', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 60px; font-weight: bold; color: #ffffff; margin-top: -10px; padding: 0 0 10px 0;}
 .remove-number {
+  font-family: 'AGENCYR', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 25px;
   font-weight: normal;
-  margin: -45px 0 0 110px;       /* ← 왼쪽으로 붙임 */
+  margin: -45px 0 0 120px;       /* ← 왼쪽으로 붙임 */
   color: #ffffff;
   align-self: flex-start;  /* ← 왼쪽 정렬 유지 */
 }
-.unit { font-size: 16px; margin-left: 4px; }
+.unit { font-family: 'AGENCYR', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 16px; margin-left: 4px; }
 
 /* 키패드 (항상 위 레이어) */
 .keypad {

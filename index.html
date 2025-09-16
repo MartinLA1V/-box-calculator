@@ -22,10 +22,10 @@
       <!-- 결과(패널 내부) -->
       <div class="result-box" id="robot-result" aria-hidden="true">
         <div class="big-number flex-line">
-          <span id="robot-box">0</span><span class="unit">box</span>
+          <span id="robot-box">0</span><span class="unit">BOX</span>
         </div>
         <div class="small-number flex-line">
-          <span id="robot-rem">0</span><span class="unit">ea</span>
+          <span id="robot-rem">0</span><span class="unit">EA</span>
         </div>
         <div class="remove-number">-<span id="robot-remove">0</span></div>
       </div>
@@ -55,7 +55,7 @@
   <div class="inner-pack">
     <div class="inner-pack-row">
       <label for="inner">INNER PACK</label>
-      <input class="inner-input" id="inner" readonly value="0">
+      <input class="inner-input" id="inner" readonly value="12">
       <button class="clear-inner-btn" onclick="clearInner()">C</button>
     </div>
   </div>
@@ -107,7 +107,7 @@
         </div>
 
         <label for="unshipped-inner">inner pack:</label>
-        <input type="number" id="unshipped-inner" value="1" oninput="updateBoxInfo()">
+        <input type="number" id="unshipped-inner" value="12" oninput="updateBoxInfo()">
 
         <label for="unshipped-available">현재 피킹 가능한 수량:</label>
         <input type="number" id="unshipped-available" value="0">
