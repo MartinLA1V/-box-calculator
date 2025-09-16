@@ -298,3 +298,12 @@ body {
 .input-preview { font-size: 14px; background: #f9f9f9; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; color: #333; }
 .input-with-info { display: flex; align-items: center; gap: 10px; }
 .box-info { font-size: 13px; color: #555; white-space: nowrap; }
+
+/* =========================
+   🔧 초기화 순간 전환(transition) 차단
+   - clearAll() 시 .no-anim 부착 → 모든 전환/애니메이션 잠시 OFF
+   ========================= */
+.no-anim, .no-anim * {
+  transition: none !important;
+  animation: none !important;
+}

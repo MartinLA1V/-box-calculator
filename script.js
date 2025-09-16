@@ -79,17 +79,22 @@ function clearInner() {
 }
 
 function clearAll() {
-  // ※ 한글 주석: C(전체 초기화) 시 inner=12 유지
+  // ✅ 값 초기화
   robotInput.value = "0";
   dasInput.value   = "0";
-
-  // 일단 12로
-  setInner(DEFAULT_INNER);
+  setInner(DEFAULT_INNER); // inner=12 유지
 
   const totalEl = document.getElementById('total');
   totalEl.textContent = "0";
   totalEl.style.display = 'none';
 
+  // ✅ 전환 끊김 방지: 초기화 순간 전환 OFF
+  const rb = document.getElementById('robot-box-container');
+  const db = document.getElementById('das-box-container');
+  rb.classList.add('no-anim');
+  db.classList.add('no-anim');
+
+  // ✅ 결과/클래스 일괄 리셋 (전환 없이 한 번에 스냅)
   ['robot', 'das'].forEach(id => {
     document.getElementById(`${id}-box`).innerText    = "0";
     document.getElementById(`${id}-rem`).innerText    = "0";
@@ -104,10 +109,19 @@ function clearAll() {
 
   clearFocusStyle();
 
-  // 자동 리사이즈가 값을 건드려도, 마지막에 다시 확정
+  // ✅ 입력 폭 재계산
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
-  setInner(DEFAULT_INNER); // ✅ 최종 보정(현재값/기본값/속성 모두)
+  setInner(DEFAULT_INNER); // 최종 보정
+
+  // ✅ 다음 프레임에 전환 복구 (향후 애니메이션은 정상 작동)
+  //    - 강제 리플로우로 현재 상태 확정 후, rAF에서 클래스 제거
+  void rb.offsetHeight; void db.offsetHeight; // 강제 리플로우
+  requestAnimationFrame(() => {
+    rb.classList.remove('no-anim');
+    db.classList.remove('no-anim');
+  });
 }
+
 
 /* 4) 계산 & 확장 */
 function calculate() {
