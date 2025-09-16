@@ -49,7 +49,6 @@ function press(num) {
   autoResizeInput(el);
 }
 function backspace() {
-  if (focused === 'inner') return;
   const el = document.getElementById(focused);
   if (!el) return;
   const current = el.value;
