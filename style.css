@@ -189,7 +189,8 @@ body {
 }
 .inner-pack-row label { white-space: nowrap; }
 .inner-pack button, .clear-inner-btn {
-  padding: 6px 10px; font-size: 14px; color: #333;
+  margin-bottom: 3px;
+  padding: 2px 4px; font-size: 10px; color: #333;
   border: 1px solid #999; border-radius: 6px;
   background-color: white; cursor: pointer;
   transition: background-color .2s, color .2s;
