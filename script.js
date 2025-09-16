@@ -43,12 +43,14 @@ function clearFocusStyle() {
 
 /* 3) 숫자 입력/삭제/초기화 */
 function press(num) {
+  // ※ 한글 주석: 포커스된 입력창에 숫자 추가 (inner 포함)
   const el = document.getElementById(focused);
   el.value = (el.value === '0') ? `${num}` : el.value + num;
   el.scrollLeft = el.scrollWidth;
   autoResizeInput(el);
 }
 function backspace() {
+  // ✅ inner 도 백스페이스 허용 (기존의 if (focused === 'inner') return; 제거)
   const el = document.getElementById(focused);
   if (!el) return;
   const current = el.value;
@@ -77,6 +79,7 @@ function clearInner() {
 }
 
 function clearAll() {
+  // ※ 한글 주석: C(전체 초기화) 시 inner=12 유지
   robotInput.value = "0";
   dasInput.value   = "0";
 
@@ -156,7 +159,7 @@ function calculate() {
   clearFocusStyle();
 }
 
-/* 5) Unshipped 모달 */
+/* 5) Unshipped 모달 (요청: 적용 안 해도 됨 → 기존 유지) */
 function closeUnshipped() {
   document.getElementById("unshipped-modal").style.display = "none";
 }
@@ -265,7 +268,46 @@ function updateBoxInfo() {
   });
 })();
 
-/* 7) 초기 상태 */
+/* 7) iOS Standalone(홈 추가)에서 확대/스크롤 전면 금지 */
+(function lockIOSGestures() {
+  // ※ 한글 주석: iOS 홈 추가 여부 확인 (사파리 탭에서는 과도하므로 standalone일 때만)
+  const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+  if (!isStandalone) return;
+
+  // body/html에 클래스 부여 → CSS에서 고정 처리
+  document.documentElement.classList.add('standalone');
+  document.body.classList.add('standalone');
+
+  // 핀치 제스처 확대 차단
+  const blockGesture = (e) => { e.preventDefault(); };
+  document.addEventListener('gesturestart', blockGesture, { passive: false });
+  document.addEventListener('gesturechange', blockGesture, { passive: false });
+  document.addEventListener('gestureend', blockGesture, { passive: false });
+
+  // 더블탭 확대 차단
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 350) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+
+  // 스크롤/바운스 차단
+  document.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  // 두 손가락 시작 확대 즉시 차단
+  document.addEventListener('touchstart', function(e) {
+    if (e.touches && e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+})();
+
+/* 8) 초기 상태 */
 window.onload = () => {
   // ✅ 시작할 때부터 12로 확정(현재값/기본값/속성 모두)
   setInner(DEFAULT_INNER);
@@ -277,4 +319,3 @@ window.onload = () => {
   document.getElementById('robot-box-container').classList.remove('expanded');
   document.getElementById('das-box-container').classList.remove('expanded');
 };
-

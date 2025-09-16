@@ -2,9 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
+  <!-- 🛠 확대/축소 전면 금지 + 노치 대응 -->
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
   />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -55,7 +56,9 @@
   <div class="inner-pack">
     <div class="inner-pack-row">
       <label for="inner">INNER PACK</label>
+      <!-- ✅ 기본값 12 -->
       <input class="inner-input" id="inner" readonly value="12">
+      <button class="clear-inner-btn" onclick="clearInner()">C</button>
     </div>
   </div>
 
@@ -81,7 +84,7 @@
     <button class="unshipped-btn" onclick="handleUnshipped()">U</button>
   </div>
 
-  <!-- Unshipped 팝업 -->
+  <!-- Unshipped 팝업 (요청: 적용 안 해도 됨 → 그대로 유지) -->
   <div id="unshipped-modal" class="modal" aria-hidden="true">
     <div class="modal-content">
       <button class="close-btn" onclick="closeUnshipped()">×</button>
@@ -106,6 +109,7 @@
         </div>
 
         <label for="unshipped-inner">inner pack:</label>
+        <!-- 현재 버전은 12로 되어 있음. 필요 없으면 1로 돌려도 무방 -->
         <input type="number" id="unshipped-inner" value="12" oninput="updateBoxInfo()">
 
         <label for="unshipped-available">현재 피킹 가능한 수량:</label>

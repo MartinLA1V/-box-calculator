@@ -1,3 +1,34 @@
+/* =========================
+   📱 iOS Standalone(홈 추가) 전용: 스크롤/바운스/확대 금지용
+   - JS에서 <html>, <body>에 'standalone' 클래스를 추가할 때만 적용됨
+   ========================= */
+
+/* 전체 페이지 고정: 스크롤 자체 제거 */
+html.standalone,
+body.standalone {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+/* iOS 탄성 스크롤(바운스) 방지 */
+html.standalone,
+body.standalone,
+#app,
+.top-inputs,
+.keypad,
+.inner-pack {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: auto; /* iOS 관성 스크롤 해제 */
+}
+
+/* 제스처 확대 억제 보조 */
+* {
+  touch-action: manipulation; /* 핀치/더블탭 확대 억제(브라우저별 보조) */
+}
+
 * { box-sizing: border-box; }
 
 @font-face {
