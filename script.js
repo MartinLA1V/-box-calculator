@@ -9,6 +9,9 @@ let isLocked = false;
 // 한글 주석: inner pack 빠른 선택용 옵션
 const INNER_PACK_OPTIONS = [12, 15, 16, 18];
 
+// 한글 주석: U 버튼 눌렀을 때 보여줄 배수 기준값
+const MULTIPLE_BASES = [12, 15, 16, 18];
+
 /* 0) 뷰포트 높이 동기화 (iOS 주소창 대응) */
 function setVhUnit() {
   const h = (window.visualViewport?.height ?? window.innerHeight) * 0.01;
@@ -45,37 +48,46 @@ function createInnerPackOptions() {
   wrap.style.left = '50%';
   wrap.style.transform = 'translateX(-50%)';
   wrap.style.marginTop = '8px';
-  wrap.style.padding = '8px';
-  wrap.style.background = '#ffffff';
-  wrap.style.border = '1px solid #d0d0d0';
-  wrap.style.borderRadius = '8px';
-  wrap.style.boxShadow = '0 6px 18px rgba(0,0,0,0.12)';
+  wrap.style.padding = '10px';
+
+  // 한글 주석: 더 투명 + 블러 강화
+  wrap.style.background = 'rgba(255,255,255,0.01)';
+  wrap.style.backdropFilter = 'blur(7px)';
+
+  wrap.style.borderRadius = '12px';
+  wrap.style.boxShadow = 'none';
   wrap.style.zIndex = '200';
-  wrap.style.display = 'none';
-  wrap.style.gap = '6px';
+
+  wrap.style.display = 'flex';
+  wrap.style.gap = '8px';
   wrap.style.flexWrap = 'wrap';
   wrap.style.justifyContent = 'center';
-  wrap.style.minWidth = '220px';
+  wrap.style.minWidth = '420px';
+  wrap.style.minHeight = '420px';
 
   INNER_PACK_OPTIONS.forEach((num) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.textContent = String(num);
-    btn.style.padding = '8px 12px';
-    btn.style.border = '1px solid #999';
-    btn.style.borderRadius = '6px';
-    btn.style.background = '#fff';
-    btn.style.color = '#333';
-    btn.style.fontSize = '14px';
+
+    btn.style.width = '44px';
+    btn.style.height = '44px';
+    btn.style.border = 'none';
+    btn.style.borderRadius = '50%';
+    btn.style.background = '#000';
+    btn.style.color = '#fff';
+    btn.style.fontSize = '16px';
+    btn.style.fontWeight = '600';
     btn.style.cursor = 'pointer';
 
-    // 한글 주석: 클릭으로 inner pack 값 즉시 적용
+    // 한글 주석: 버튼 그림자 유지
+    btn.style.boxShadow = '0 4px 10px rgba(0,0,0,0.35)';
+
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
       selectInnerPack(num);
     });
 
-    // 한글 주석: iOS 터치 대응
     btn.addEventListener('touchend', function(e) {
       if (e.cancelable) e.preventDefault();
       e.stopPropagation();
@@ -166,7 +178,6 @@ function clearFocusStyle() {
 
 /* 2-1) 계산 결과가 나온 상태에서 다시 수정할 수 있게 편집 모드로 전환 */
 function enterEditMode(target) {
-  // 한글 주석: 잠금 해제
   isLocked = false;
 
   const totalEl = document.getElementById('total');
@@ -176,12 +187,14 @@ function enterEditMode(target) {
     const resultBox = document.getElementById(`${id}-result`);
     const boxContainer = document.getElementById(`${id}-box-container`);
 
-    // 한글 주석: 결과 영역 숨기기
-    resultBox.style.display = 'none';
+    // 한글 주석: 먼저 박스 축소
+    boxContainer.classList.remove('expanded', 'dimmed-input');
     resultBox.classList.remove('dimmed');
 
-    // 한글 주석: 펼쳐진 상태 해제
-    boxContainer.classList.remove('expanded', 'dimmed-input');
+    // 한글 주석: 축소 애니메이션 후 결과 숨김
+    setTimeout(() => {
+      resultBox.style.display = 'none';
+    }, 220);
   });
 
   focused = target;
@@ -307,6 +320,9 @@ function clearAll() {
   clearFocusStyle();
   hideInnerPackOptions();
 
+  // 한글 주석: 배수표 모달이 열려 있으면 같이 닫기
+  closeUnshipped();
+
   // ✅ 입력 폭 재계산
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
   setInner(DEFAULT_INNER);
@@ -374,111 +390,72 @@ function calculate() {
   clearFocusStyle();
 }
 
-/* 5) Unshipped 모달 */
+/* 5) U 버튼 모달: 12 / 15 / 16 / 18 배수표 10단계 */
 function closeUnshipped() {
-  document.getElementById("unshipped-modal").style.display = "none";
+  const modal = document.getElementById("unshipped-modal");
+  if (!modal) return;
+  modal.style.display = "none";
 }
 
 function handleUnshipped() {
-  // 한글 주석: 계산 완료 후에는 U 버튼도 막음
-  if (isLocked) return;
+  const modal = document.getElementById("unshipped-modal");
+  if (!modal) return;
 
-  const robotVal = parseInt(document.getElementById("robot").value) || 0;
-  const dasVal   = parseInt(document.getElementById("das").value) || 0;
-  const innerVal = parseInt(document.getElementById("inner").value) || 0;
+  // 한글 주석: 기존 미출고 계산 관련 내용 전부 제거하고 배수표만 표시
+  modal.innerHTML = `
+    <div class="modal-content" style="width:min(92vw, 680px); max-height:85vh; overflow:auto;">
+      <button class="close-btn" type="button" onclick="closeUnshipped()">닫기</button>
 
-  const totalPicking = robotVal + dasVal;
+      <h3 style="margin:0 0 14px; text-align:center;">배수표</h3>
 
-  document.getElementById("unshipped-modal").style.display = "flex";
-  document.getElementById("preview-total-picking").innerHTML = `<strong>총 피킹 수량: ${totalPicking}개</strong>`;
-
-  document.getElementById("unshipped-robot").value = robotVal;
-  document.getElementById("unshipped-das").value   = dasVal;
-  document.getElementById("unshipped-inner").value = innerVal || 1;
-
-  document.getElementById("unshipped-result").innerHTML = "";
-
-  updateBoxInfo();
-}
-
-function calculateUnshipped() {
-  const robot     = parseInt(document.getElementById("unshipped-robot").value) || 0;
-  const das       = parseInt(document.getElementById("unshipped-das").value) || 0;
-  const inner     = parseInt(document.getElementById("unshipped-inner").value) || 0;
-  const available = parseInt(document.getElementById("unshipped-available").value) || 0;
-
-  const totalPicking = robot + das;
-  document.getElementById("preview-total-picking").innerHTML = `<strong>총 피킹 수량: ${totalPicking}개</strong>`;
-
-  if (inner <= 0) {
-    alert("inner pack은 1 이상이어야 합니다.");
-    return;
-  }
-
-  const extraPicking = Math.max(totalPicking - available, 0);
-
-  let extraInfoEl = document.getElementById("extra-picking-info");
-  if (!extraInfoEl) {
-    const previewArea = document.querySelector(".input-preview");
-    extraInfoEl = document.createElement("p");
-    extraInfoEl.id = "extra-picking-info";
-    previewArea.appendChild(extraInfoEl);
-  }
-  extraInfoEl.innerHTML = `<strong>추가 피킹 수량: ${extraPicking}개</strong>`;
-
-  let remaining = available;
-  const robotPicked = Math.min(robot, remaining);
-  remaining -= robotPicked;
-
-  const dasPicked = Math.min(das, remaining);
-  remaining -= dasPicked;
-
-  const robotShort = robot - robotPicked;
-  const dasShort   = das - dasPicked;
-
-  let robotStatus = `✅ robot: 피킹 완료`;
-  let dasStatus   = `✅ das: 피킹 완료`;
-
-  if (robotShort > 0) {
-    const robotBox = Math.floor(robotShort / inner);
-    const robotEa  = robotShort % inner;
-    robotStatus = `❗ robot: 추가 피킹 ${robotShort}개 (${robotBox}box / ${robotEa}ea)`;
-  }
-
-  if (dasShort > 0) {
-    const dasBox = Math.floor(dasShort / inner);
-    const dasEa  = dasShort % inner;
-    dasStatus = `❗ das: 추가 피킹 ${dasShort}개 (${dasBox}box / ${dasEa}ea)`;
-  }
-
-  const result = `
-    <p>${robotStatus}<br>${dasStatus}</p>
-    ${extraPicking > 0
-      ? `<p><strong>🚨 아직 ${extraPicking}개 더 피킹이 필요합니다.</strong></p>`
-      : `<p>🎉 현재 수량으로 피킹이 충분합니다.</p>`}
+      <div style="overflow:auto;">
+        <table style="
+          width:100%;
+          border-collapse:collapse;
+          text-align:center;
+          font-size:16px;
+          font-weight:600;
+        ">
+          <thead>
+            <tr>
+              <th style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.18);">단계</th>
+              <th style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.18);">12</th>
+              <th style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.18);">15</th>
+              <th style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.18);">16</th>
+              <th style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.18);">18</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${Array.from({ length: 10 }, (_, idx) => {
+              const step = idx + 1;
+              return `
+                <tr>
+                  <td style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.08);">${step}</td>
+                  <td style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.08);">${12 * step}</td>
+                  <td style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.08);">${15 * step}</td>
+                  <td style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.08);">${16 * step}</td>
+                  <td style="padding:10px 6px; border-bottom:1px solid rgba(255,255,255,0.08);">${18 * step}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
   `;
-  document.getElementById("unshipped-result").innerHTML = result;
-}
 
-function updateBoxInfo() {
-  const robot = parseInt(document.getElementById("unshipped-robot").value) || 0;
-  const das   = parseInt(document.getElementById("unshipped-das").value) || 0;
-  const inner = parseInt(document.getElementById("unshipped-inner").value) || 1;
-
-  const robotBox = Math.floor(robot / inner);
-  const robotEa  = robot % inner;
-  const dasBox   = Math.floor(das / inner);
-  const dasEa    = das % inner;
-
-  document.getElementById("robot-box-info").innerText = `${robotBox}box / ${robotEa}ea`;
-  document.getElementById("das-box-info").innerText   = `${dasBox}box / ${dasEa}ea`;
+  modal.style.display = "flex";
 }
 
 /* 6) iOS(WebKit) 터치 → 클릭 위임 */
 (function ensureIOSClick() {
   const selectors = [
-    '.keypad button', '.clear-inner-btn', '.backspace-btn',
-    '.unshipped-btn', '.modal .close-btn', '.modal button'
+    '.keypad button',
+    '.clear-inner-btn',
+    '.backspace-btn',
+    '.unshipped-btn',
+    '.modal .close-btn',
+    '.modal button'
   ];
   const buttons = document.querySelectorAll(selectors.join(','));
   buttons.forEach(btn => {
