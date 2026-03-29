@@ -58,7 +58,7 @@ function createInnerPackOptions() {
   wrap.style.boxShadow = 'none';
   wrap.style.zIndex = '200';
 
-  wrap.style.display = 'flex';
+  // 한글 주석: 레이아웃 속성만 지정하고 시작 display는 none 유지
   wrap.style.gap = '8px';
   wrap.style.flexWrap = 'wrap';
   wrap.style.justifyContent = 'center';
@@ -100,6 +100,9 @@ function createInnerPackOptions() {
   const innerPackArea = document.querySelector('.inner-pack');
   if (innerPackArea) {
     innerPackArea.style.position = 'relative';
+
+    // 한글 주석: flex 레이아웃은 보일 때만 적용되도록 클래스 대신 속성으로 지정
+    wrap.style.display = 'none';
     innerPackArea.appendChild(wrap);
   }
 }
@@ -187,14 +190,21 @@ function enterEditMode(target) {
     const resultBox = document.getElementById(`${id}-result`);
     const boxContainer = document.getElementById(`${id}-box-container`);
 
-    // 한글 주석: 먼저 박스 축소
-    boxContainer.classList.remove('expanded', 'dimmed-input');
+    // 한글 주석: 수정 모드 전환 시 순간 확대/축소 튐 방지
+    boxContainer.classList.add('no-anim');
+
+    // 한글 주석: 결과를 먼저 즉시 숨겨서 잠깐 커졌다 줄어드는 현상 방지
+    resultBox.style.display = 'none';
     resultBox.classList.remove('dimmed');
 
-    // 한글 주석: 축소 애니메이션 후 결과 숨김
-    setTimeout(() => {
-      resultBox.style.display = 'none';
-    }, 220);
+    // 한글 주석: 그 다음 패널 확장 상태 해제
+    boxContainer.classList.remove('expanded', 'dimmed-input');
+
+    // 한글 주석: 강제 리플로우 후 다음 프레임에 애니메이션 복구
+    void boxContainer.offsetHeight;
+    requestAnimationFrame(() => {
+      boxContainer.classList.remove('no-anim');
+    });
   });
 
   focused = target;
@@ -326,6 +336,10 @@ function clearAll() {
   // ✅ 입력 폭 재계산
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
   setInner(DEFAULT_INNER);
+
+  // 한글 주석: 초기화 후 시작 포커스를 ROBOT으로 고정
+  focused = 'robot';
+  updateFocusStyle('robot');
 
   // ✅ 다음 프레임에 전환 복구
   void rb.offsetHeight;
@@ -519,12 +533,28 @@ window.onload = () => {
   // 한글 주석: 페이지 최초 진입 시 잠금 해제 상태
   isLocked = false;
 
+  // 한글 주석: 페이지 첫 시작 포커스를 ROBOT으로 고정
+  focused = 'robot';
+
   createInnerPackOptions();
 
   [robotInput, dasInput, innerInput].forEach(autoResizeInput);
+
   document.getElementById('robot-result').style.display = 'none';
   document.getElementById('das-result').style.display   = 'none';
   document.getElementById('total').style.display        = 'none';
-  document.getElementById('robot-box-container').classList.remove('expanded');
-  document.getElementById('das-box-container').classList.remove('expanded');
+
+  document.getElementById('robot-box-container').classList.remove('expanded', 'dimmed-input');
+  document.getElementById('das-box-container').classList.remove('expanded', 'dimmed-input');
+
+  document.getElementById('robot-result').classList.remove('dimmed');
+  document.getElementById('das-result').classList.remove('dimmed');
+
+  clearFocusStyle();
+  updateFocusStyle('robot');
+
+  // 한글 주석: 브라우저 기본 포커스 잔상 제거
+  if (document.activeElement) {
+    document.activeElement.blur();
+  }
 };
