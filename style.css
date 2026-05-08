@@ -116,6 +116,7 @@ body {
   overflow-x: auto; white-space: nowrap;
   box-sizing: content-box; outline: none;
   flex: 0 0 auto;
+  appearance: none;
   -webkit-appearance: none;
   margin-top: -15px;
 }
@@ -130,6 +131,7 @@ body {
   overflow-x: auto; white-space: nowrap;
   box-sizing: content-box; outline: none;
   flex: 0 0 auto;
+  appearance: none;
   -webkit-appearance: none;
   margin-top: 1px;
 }
@@ -189,8 +191,9 @@ body {
 }
 .inner-pack-row label { white-space: nowrap; }
 .inner-pack button, .clear-inner-btn {
-  margin-bottom: 3px;
-  padding: 2px 4px; font-size: 22px; color: #333;
+  margin-left: 10px;
+  margin-bottom: 6px;
+  padding: 2px 4px; font-size: 18px; color: #979797;
   border: 1px solid #999; border-radius: 6px;
   background-color: white; cursor: pointer;
   transition: background-color .2s, color .2s;
@@ -304,6 +307,7 @@ body {
    🔧 초기화 순간 전환(transition) 차단
    - clearAll() 시 .no-anim 부착 → 모든 전환/애니메이션 잠시 OFF
    ========================= */
+
 .no-anim, .no-anim * {
   transition: none !important;
   animation: none !important;

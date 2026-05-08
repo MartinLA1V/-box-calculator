@@ -7,10 +7,10 @@ const innerInput = document.getElementById('inner');
 let isLocked = false;
 
 // 한글 주석: inner pack 빠른 선택용 옵션
-const INNER_PACK_OPTIONS = [12, 15, 16, 18, 72, 90, 144];
+const INNER_PACK_OPTIONS = [12, 15, 16, 18, 36, 72, 90, 144];
 
 // 한글 주석: U 버튼 눌렀을 때 보여줄 배수 기준값
-const MULTIPLE_BASES = [12, 15, 16, 18, 72, 90, 144];
+const MULTIPLE_BASES = [12, 15, 16, 18, 36, 72, 90, 144];
 
 /* 0) 뷰포트 높이 동기화 (iOS 주소창 대응) */
 function setVhUnit() {
